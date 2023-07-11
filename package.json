@@ -1,6 +1,6 @@
 {
   "name": "vscode-message-management",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A message management library that supports getting response values",
   "main": "./out/index.js",
   "scripts": {
