@@ -19,16 +19,20 @@ interface Options {
   timeout?: number;
 }
 
+interface Vscode {
+  postMessage: (msg: unknown) => void;
+}
+
 export class Messenger {
-  private vscode: ReturnType<typeof window.acquireVsCodeApi>;
+  private vscode: Vscode;
   private options: Options;
   private eventListeners: Record<string, (data: any) => Promise<any> | any> =
     {};
   private pendingRequests: Record<string, (data: any) => any> = {};
   private sid: number = 0;
 
-  constructor(options: Options = {}) {
-    this.vscode = window.acquireVsCodeApi();
+  constructor(vscode: Vscode, options: Options = {}) {
+    this.vscode = vscode;
     this.options = options;
     this.listenMessage();
   }
