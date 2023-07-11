@@ -1,3 +1,4 @@
+import { isEmpty } from "lodash";
 import * as vscode from "vscode";
 
 interface RequestMessage {
@@ -19,24 +20,37 @@ interface Message {
 
 interface Options {
   timeout?: number;
+  cacheRequestIfWebviewIsUnbind?: boolean;
 }
 
 export class Messenger {
-  private webview: vscode.Webview;
+  private webview?: vscode.Webview;
   private options: Options;
   private eventListeners: Record<string, (data: any) => Promise<any> | any> =
     {};
+  private cachedRequests: ((webview: vscode.Webview) => void)[] = [];
   private pendingRequests: Record<string, (data: any) => any> = {};
   private sid: number = 0;
 
-  constructor(webview: vscode.Webview, options: Options = {}) {
+  constructor(options: Options = {}) {
+    const defaultOptions: Options = {
+      cacheRequestIfWebviewIsUnbind: true,
+    };
+    this.options = { ...defaultOptions, ...options };
+  }
+
+  public bindWebview(webview: vscode.Webview) {
     this.webview = webview;
-    this.options = options;
     this.listenMessage();
+
+    if (!isEmpty(this.cachedRequests)) {
+      this.cachedRequests.forEach((work) => work(webview));
+      this.cachedRequests = [];
+    }
   }
 
   private listenMessage() {
-    this.webview.onDidReceiveMessage(async ({ sid, event, data }: Message) => {
+    this.webview?.onDidReceiveMessage(async ({ sid, event, data }: Message) => {
       if (!sid) return;
 
       // request from webview
@@ -46,7 +60,7 @@ export class Messenger {
 
         const response = await listener(data);
         const responseMessage: ResponseMessage = { sid, data: response };
-        this.webview.postMessage(responseMessage);
+        this.webview?.postMessage(responseMessage);
         return;
       }
 
@@ -70,10 +84,20 @@ export class Messenger {
       const message: RequestMessage = { sid, event, data };
       this.pendingRequests[sid] = resolve;
 
-      this.webview.postMessage(message);
+      const requestWork = (webview: vscode.Webview) => {
+        webview.postMessage(message);
+        if (this.options.timeout) {
+          setTimeout(() => reject("timeout"), this.options.timeout);
+        }
+      };
 
-      if (this.options.timeout) {
-        setTimeout(() => reject("timeout"), this.options.timeout);
+      if (this.webview) {
+        requestWork(this.webview);
+        return;
+      }
+
+      if (this.options.cacheRequestIfWebviewIsUnbind) {
+        this.cachedRequests.push(requestWork);
       }
     });
   }
