@@ -1,0 +1,33 @@
+{
+  "name": "vscode-messenger",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch:webview": "cd packages/webview && tsc --watch",
+    "watch:extension": "cd packages/extension && tsc --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/huanghaoAlvin/vscode-messenger.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/huanghaoAlvin/vscode-extension-webview-messager/issues"
+  },
+  "homepage": "https://github.com/huanghaoAlvin/vscode-extension-webview-messager#readme",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.61.0",
+    "eslint": "^8.44.0",
+    "eslint-config-standard-with-typescript": "^36.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-n": "^15.7.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
+  }
+}
