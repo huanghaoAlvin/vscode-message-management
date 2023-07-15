@@ -8,9 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/huanghaoAlvin/vscode-messenger.git"
+    "url": "git+https://github.com/huanghaoAlvin/VSCode-Message-Management"
   },
-  "keywords": [],
+  "keywords": [
+    "vscode",
+    "messenger",
+    "vscode-messenger",
+    "message-management"
+  ],
   "author": "",
   "license": "ISC",
   "bugs": {
