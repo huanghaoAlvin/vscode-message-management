@@ -17,7 +17,7 @@
     "message-management"
   ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/huanghaoAlvin/vscode-extension-webview-messager/issues"
   },
